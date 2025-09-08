@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lit 3 Todo App</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+    </style>
+    <!-- Import the Lit library -->
+    <script type="module" src="https://cdn.jsdelivr.net/gh/lit/dist@3/core/lit-core.min.js"></script>
+</head>
+<body>
+
+    <lit-todo-app></lit-todo-app>
+
+    <script type="module">
+        import { LitElement, html, css } from 'https://cdn.jsdelivr.net/gh/lit/dist@3/core/lit-core.min.js';
+
+        class LitTodoApp extends LitElement {
+            static styles = css`
+                :host {
+                    display: block;
+                    width: 100%;
+                    max-width: 400px;
+                    background: #fff;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                    padding: 20px;
+                }
+                h1 {
+                    font-size: 24px;
+                    color: #333;
+                    margin-top: 0;
+                }
+                .input-container {
+                    display: flex;
+                    margin-bottom: 20px;
+                }
+                input {
+                    flex-grow: 1;
+                    padding: 10px;
+                    border: 1px solid #ddd;
+                    border-radius: 4px 0 0 4px;
+                    font-size: 16px;
+                }
+                button {
+                    padding: 10px 15px;
+                    border: none;
+                    background-color: #324fff; /* Lit's brand color */
+                    color: white;
+                    border-radius: 0 4px 4px 0;
+                    cursor: pointer;
+                    font-size: 16px;
+                }
+                button:hover {
+                    background-color: #1e3aff;
+                }
+                ul {
+                    list-style-type: none;
+                    padding: 0;
+                    margin: 0;
+                }
+                li {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    padding: 12px 0;
+                    border-bottom: 1px solid #eee;
+                    font-size: 16px;
+                }
+                li:last-child {
+                    border-bottom: none;
+                }
+                .delete-btn {
+                    background: none;
+                    border: none;
+                    color: #ff3b30;
+                    cursor: pointer;
+                    font-size: 18px;
+                }
+            `;
+
+            static properties = {
+                todos: { state: true }, // 'state: true' makes it a reactive property without being a public attribute
+            };
+
+            constructor() {
+                super();
+                this.storageKey = 'lit-todo-list';
+                this.todos = this._loadList();
+            }
+
+            _loadList() {
+                const storedTodos = localStorage.getItem(this.storageKey);
+                return storedTodos ? JSON.parse(storedTodos) : [];
+            }
+
+            _saveList() {
+                localStorage.setItem(this.storageKey, JSON.stringify(this.todos));
+            }
+
+            _handleKeydown(e) {
+                if (e.key === 'Enter') {
+                    this._addItem();
+                }
+            }
+
+            _addItem() {
+                const input = this.shadowRoot.querySelector('#new-item-input');
+                const newItem = input.value.trim();
+                if (newItem) {
+                    this.todos = [...this.todos, newItem];
+                    this._saveList();
+                    input.value = '';
+                }
+            }
+
+            _deleteItem(index) {
+                this.todos = this.todos.filter((_, i) => i !== index);
+                this._saveList();
+            }
+
+            render() {
+                return html`
+                    <h1>Lit Todos</h1>
+                    <div class="input-container">
+                        <input 
+                            type="text" 
+                            id="new-item-input" 
+                            placeholder="Add a new task..." 
+                            @keydown=${this._handleKeydown}>
+                        <button @click=${this._addItem}>Add</button>
+                    </div>
+                    <ul>
+                        ${this.todos.map((item, index) => html`
+                            <li>
+                                <span>${item}</span>
+                                <button class="delete-btn" @click=${() => this._deleteItem(index)}>×</button>
+                            </li>
+                        `)}
+                    </ul>
+                `;
+            }
+        }
+
+        customElements.define('lit-todo-app', LitTodoApp);
+    </script>
+
+</body>
+</html>

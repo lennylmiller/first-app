@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Component Todo App</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <todo-list></todo-list>
+
+    <script>
+        const template = document.createElement('template');
+        template.innerHTML = `
+            <style>
+                :host {
+                    display: block;
+                    width: 100%;
+                    max-width: 400px;
+                    background: #fff;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                    padding: 20px;
+                }
+                h1 {
+                    font-size: 24px;
+                    color: #333;
+                    margin-top: 0;
+                }
+                .input-container {
+                    display: flex;
+                    margin-bottom: 20px;
+                }
+                #new-item-input {
+                    flex-grow: 1;
+                    padding: 10px;
+                    border: 1px solid #ddd;
+                    border-radius: 4px 0 0 4px;
+                    font-size: 16px;
+                }
+                #add-btn {
+                    padding: 10px 15px;
+                    border: none;
+                    background-color: #007aff;
+                    color: white;
+                    border-radius: 0 4px 4px 0;
+                    cursor: pointer;
+                    font-size: 16px;
+                }
+                #add-btn:hover {
+                    background-color: #005ecb;
+                }
+                ul {
+                    list-style-type: none;
+                    padding: 0;
+                    margin: 0;
+                }
+                li {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    padding: 12px 0;
+                    border-bottom: 1px solid #eee;
+                    font-size: 16px;
+                }
+                li:last-child {
+                    border-bottom: none;
+                }
+                .delete-btn {
+                    background: none;
+                    border: none;
+                    color: #ff3b30;
+                    cursor: pointer;
+                    font-size: 18px;
+                }
+            </style>
+            <h1>Todo List</h1>
+            <div class="input-container">
+                <input type="text" id="new-item-input" placeholder="Add a new task...">
+                <button id="add-btn">Add</button>
+            </div>
+            <ul id="todo-list"></ul>
+        `;
+
+        class TodoList extends HTMLElement {
+            constructor() {
+                super();
+                this.attachShadow({ mode: 'open' });
+                this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+                this.todos = [];
+                this.listId = 'web-component-todo-list';
+            }
+
+            connectedCallback() {
+                this._loadList();
+                this._renderList();
+
+                this.shadowRoot.querySelector('#add-btn').addEventListener('click', () => this._addItem());
+                this.shadowRoot.querySelector('#new-item-input').addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        this._addItem();
+                    }
+                });
+                this.shadowRoot.querySelector('#todo-list').addEventListener('click', (e) => {
+                    if (e.target.classList.contains('delete-btn')) {
+                        const index = parseInt(e.target.dataset.index, 10);
+                        this._deleteItem(index);
+                    }
+                });
+            }
+
+            _loadList() {
+                const storedTodos = localStorage.getItem(this.listId);
+                if (storedTodos) {
+                    this.todos = JSON.parse(storedTodos);
+                }
+            }
+
+            _saveList() {
+                localStorage.setItem(this.listId, JSON.stringify(this.todos));
+            }
+
+            _renderList() {
+                const listElement = this.shadowRoot.querySelector('#todo-list');
+                listElement.innerHTML = '';
+                this.todos.forEach((item, index) => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <span>${item}</span>
+                        <button class="delete-btn" data-index="${index}">×</button>
+                    `;
+                    listElement.appendChild(li);
+                });
+            }
+
+            _addItem() {
+                const input = this.shadowRoot.querySelector('#new-item-input');
+                const newItem = input.value.trim();
+                if (newItem) {
+                    this.todos.push(newItem);
+                    this._saveList();
+                    this._renderList();
+                    input.value = '';
+                    input.focus();
+                }
+            }
+
+            _deleteItem(index) {
+                this.todos.splice(index, 1);
+                this._saveList();
+                this._renderList();
+            }
+        }
+
+        customElements.define('todo-list', TodoList);
+    </script>
+
+</body>
+</html>

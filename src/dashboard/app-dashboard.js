@@ -3,6 +3,7 @@ import { sharedStyles } from './styles/shared-styles.js';
 import { ResponsiveController } from './styles/responsive.js';
 import { themeService } from './services/theme-service.js';
 import { keyboardShortcuts } from './services/keyboard-shortcuts-service.js';
+import { accessibilityService } from './services/accessibility-service.js';
 import './components/app-sidebar.js';
 import './components/app-header.js';
 
@@ -90,7 +91,8 @@ export class AppDashboard extends LitElement {
     sidebarOpen: { type: Boolean, state: true },
     currentRoute: { type: String, state: true },
     theme: { type: String, state: true },
-    user: { type: Object, state: true }
+    user: { type: Object, state: true },
+    loading: { type: Boolean, state: true }
   };
   
   constructor() {
@@ -98,6 +100,7 @@ export class AppDashboard extends LitElement {
     this.sidebarOpen = true;
     this.currentRoute = '/';
     this.theme = 'light';
+    this.loading = false;
     this.user = {
       name: 'John Doe',
       email: 'john.doe@example.com',
@@ -161,12 +164,14 @@ export class AppDashboard extends LitElement {
     const showBackdrop = this.responsive.isMobile() && this.sidebarOpen;
     
     return html`
-      <div class="dashboard-container">
+      <div class="dashboard-container" role="application" aria-label="Dashboard Application">
         <app-header
           .user="${this.user}"
           .theme="${this.theme}"
           @toggle-sidebar="${this.toggleSidebar}"
-          @theme-change="${this.handleThemeChange}">
+          @theme-change="${this.handleThemeChange}"
+          role="banner"
+          aria-label="Dashboard Header">
         </app-header>
         
         <div class="dashboard-body">
@@ -175,11 +180,17 @@ export class AppDashboard extends LitElement {
             .currentRoute="${this.currentRoute}"
             .responsive="${this.responsive.currentBreakpoint}"
             @toggle="${this.toggleSidebar}"
-            @navigate="${this.handleNavigation}">
+            @navigate="${this.handleNavigation}"
+            role="navigation"
+            aria-label="Main Navigation">
           </app-sidebar>
           
-          <main class="dashboard-content ${this.sidebarOpen ? 'sidebar-open' : 'sidebar-closed'}">
-            <div id="outlet">
+          <main 
+            class="dashboard-content ${this.sidebarOpen ? 'sidebar-open' : 'sidebar-closed'}"
+            role="main"
+            aria-label="Main Content"
+            tabindex="-1">
+            <div id="outlet" aria-live="polite" aria-busy="${this.loading}">
               <!-- Router outlet will be attached here -->
             </div>
           </main>
@@ -235,7 +246,37 @@ export class AppDashboard extends LitElement {
     // Listen for route changes
     window.addEventListener('vaadin-router-location-changed', (e) => {
       this.currentRoute = e.detail.location.pathname;
+      this.loading = false;
+      
+      // Announce route change to screen readers
+      const routeName = this.getRouteNameFromPath(e.detail.location.pathname);
+      accessibilityService.setPageTitle(routeName);
     });
+    
+    // Listen for route loading
+    window.addEventListener('vaadin-router-location-changing', () => {
+      this.loading = true;
+      accessibilityService.announceLoading('Loading page...');
+    });
+  }
+  
+  getRouteNameFromPath(path) {
+    const routeNames = {
+      '/': 'Home',
+      '/todos': 'Todos',
+      '/analytics': 'Analytics',
+      '/widgets': 'Widgets',
+      '/profile': 'Profile',
+      '/settings': 'Settings'
+    };
+    
+    for (const [route, name] of Object.entries(routeNames)) {
+      if (path.startsWith(route)) {
+        return name;
+      }
+    }
+    
+    return 'Dashboard';
   }
 }
 

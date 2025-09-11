@@ -1,6 +1,7 @@
 import { LitElement, html, css } from 'lit';
 import { sharedStyles } from '../styles/shared-styles.js';
 import { themeService } from '../services/theme-service.js';
+import '../components/theme-editor.js';
 
 export class SettingsView extends LitElement {
   static styles = [
@@ -77,16 +78,62 @@ export class SettingsView extends LitElement {
         color: white;
         border-color: var(--color-primary);
       }
+      
+      .theme-editor-button {
+        padding: 0.5rem 1rem;
+        background-color: var(--color-primary);
+        color: white;
+        border: none;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        font-size: 0.875rem;
+        transition: background-color var(--transition-fast);
+      }
+      
+      .theme-editor-button:hover {
+        background-color: var(--color-primary-dark);
+      }
+      
+      .shortcuts-section {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
+      .shortcut-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75rem;
+        background-color: var(--color-background);
+        border-radius: var(--border-radius);
+      }
+      
+      .shortcut-keys {
+        display: flex;
+        gap: 0.25rem;
+      }
+      
+      .key {
+        padding: 0.25rem 0.5rem;
+        background-color: var(--sidebar-hover);
+        border: 1px solid var(--input-border);
+        border-radius: 4px;
+        font-family: monospace;
+        font-size: 0.875rem;
+      }
     `
   ];
   
   static properties = {
-    currentTheme: { type: String, state: true }
+    currentTheme: { type: String, state: true },
+    showThemeEditor: { type: Boolean, state: true }
   };
   
   constructor() {
     super();
     this.currentTheme = themeService.getCurrentTheme();
+    this.showThemeEditor = false;
   }
   
   render() {
@@ -115,13 +162,77 @@ export class SettingsView extends LitElement {
               </button>
             </div>
           </div>
+          
+          <div class="setting-item">
+            <div class="setting-label">
+              <span class="setting-name">Custom Themes</span>
+              <span class="setting-description">Create and manage custom color themes</span>
+            </div>
+            <button 
+              class="theme-editor-button"
+              @click="${() => this.showThemeEditor = true}">
+              🎨 Open Theme Editor
+            </button>
+          </div>
         </div>
         
         <div class="settings-section">
-          <h2 class="section-title">Preferences</h2>
-          <p class="setting-description">More settings coming soon...</p>
+          <h2 class="section-title">Keyboard Shortcuts</h2>
+          <div class="shortcuts-section">
+            <div class="shortcut-item">
+              <div class="setting-label">
+                <span class="setting-name">Search</span>
+                <span class="setting-description">Open global search</span>
+              </div>
+              <div class="shortcut-keys">
+                <span class="key">Cmd</span>
+                <span class="key">K</span>
+              </div>
+            </div>
+            
+            <div class="shortcut-item">
+              <div class="setting-label">
+                <span class="setting-name">Toggle Sidebar</span>
+                <span class="setting-description">Show/hide navigation sidebar</span>
+              </div>
+              <div class="shortcut-keys">
+                <span class="key">Cmd</span>
+                <span class="key">B</span>
+              </div>
+            </div>
+            
+            <div class="shortcut-item">
+              <div class="setting-label">
+                <span class="setting-name">Toggle Theme</span>
+                <span class="setting-description">Switch between light and dark mode</span>
+              </div>
+              <div class="shortcut-keys">
+                <span class="key">Cmd</span>
+                <span class="key">Shift</span>
+                <span class="key">T</span>
+              </div>
+            </div>
+            
+            <div class="shortcut-item">
+              <div class="setting-label">
+                <span class="setting-name">Navigation</span>
+                <span class="setting-description">Quick navigation with Alt+Number</span>
+              </div>
+              <div class="shortcut-keys">
+                <span class="key">Alt</span>
+                <span class="key">1-9</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+      
+      ${this.showThemeEditor ? html`
+        <theme-editor
+          @close="${() => this.showThemeEditor = false}"
+          @theme-applied="${() => this.currentTheme = themeService.getCurrentTheme()}">
+        </theme-editor>
+      ` : ''}
     `;
   }
   

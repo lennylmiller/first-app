@@ -5,7 +5,9 @@
       "Bash(npm install)",
       "mcp__sequential__sequentialthinking",
       "Bash(npm run dev:*)",
-      "Read(//Users/LenMiller/code/banno/platform-ux/projects/banno-online/**)"
+      "Read(//Users/LenMiller/code/banno/platform-ux/projects/banno-online/**)",
+      "Bash(npm install:*)",
+      "Bash(open http://localhost:5173/dashboard.html)"
     ],
     "deny": [],
     "ask": []

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Components Dashboard</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 
+                         'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--color-background, #ffffff);
+            color: var(--color-text-primary, #212121);
+        }
+        
+        /* Prevent FOUC (Flash of Unstyled Content) */
+        app-dashboard:not(:defined) {
+            display: block;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        /* Loading indicator */
+        .loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            font-size: 1.25rem;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+        
+        .loading.hide {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 1rem;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading indicator -->
+    <div class="loading" id="loader">
+        <div class="spinner"></div>
+        <div>Loading Dashboard...</div>
+    </div>
+    
+    <!-- Dashboard component -->
+    <app-dashboard></app-dashboard>
+    
+    <!-- Load dashboard module -->
+    <script type="module">
+        import './src/dashboard/app-dashboard.js';
+        
+        // Hide loader when dashboard is defined
+        customElements.whenDefined('app-dashboard').then(() => {
+            setTimeout(() => {
+                document.getElementById('loader').classList.add('hide');
+            }, 300);
+        });
+        
+        // Handle navigation from sidebar
+        window.addEventListener('navigate', (e) => {
+            const path = e.detail.path;
+            window.history.pushState({}, '', path);
+            
+            // Trigger router navigation
+            window.dispatchEvent(new CustomEvent('vaadin-router-go', {
+                detail: { pathname: path }
+            }));
+        });
+    </script>
+</body>
+</html>

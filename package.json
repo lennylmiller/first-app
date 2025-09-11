@@ -10,8 +10,10 @@
     "serve": "vite --host"
   },
   "dependencies": {
+    "@lit/context": "^1.1.6",
     "@polymer/polymer": "^3.5.1",
-    "lit": "^3.2.0",
+    "@vaadin/router": "^2.0.0",
+    "lit": "^3.3.1",
     "lit-element": "^2.5.1",
     "lit-html": "^1.4.1",
     "morphcloud": "^0.0.18"

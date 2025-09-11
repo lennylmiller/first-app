@@ -4,7 +4,8 @@
       "WebSearch",
       "Bash(npm install)",
       "mcp__sequential__sequentialthinking",
-      "Bash(npm run dev:*)"
+      "Bash(npm run dev:*)",
+      "Read(//Users/LenMiller/code/banno/platform-ux/projects/banno-online/**)"
     ],
     "deny": [],
     "ask": []

@@ -8,12 +8,34 @@ export class SettingsView extends LitElement {
     sharedStyles,
     css`
       :host {
-        display: block;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        width: 100%;
+        min-height: 0;
+        overflow: auto;
       }
       
       .settings-container {
+        width: 100%;
         max-width: 800px;
         margin: 0 auto;
+        padding: 1.5rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      @media (max-width: 768px) {
+        .settings-container {
+          padding: 1rem;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .settings-container {
+          padding: 0.75rem;
+        }
       }
       
       .settings-section {
@@ -36,6 +58,15 @@ export class SettingsView extends LitElement {
         justify-content: space-between;
         padding: 0.75rem 0;
         border-bottom: 1px solid var(--sidebar-border);
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+      
+      @media (max-width: 640px) {
+        .setting-item {
+          flex-direction: column;
+          align-items: stretch;
+        }
       }
       
       .setting-item:last-child {

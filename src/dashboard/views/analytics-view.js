@@ -8,12 +8,34 @@ export class AnalyticsView extends LitElement {
     sharedStyles,
     css`
       :host {
-        display: block;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        width: 100%;
+        min-height: 0;
+        overflow: auto;
       }
       
       .analytics-container {
+        width: 100%;
         max-width: 1400px;
         margin: 0 auto;
+        padding: 1.5rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      @media (max-width: 768px) {
+        .analytics-container {
+          padding: 1rem;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .analytics-container {
+          padding: 0.75rem;
+        }
       }
       
       .analytics-header {
@@ -21,6 +43,15 @@ export class AnalyticsView extends LitElement {
         justify-content: space-between;
         align-items: center;
         margin-bottom: 2rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+      
+      @media (max-width: 640px) {
+        .analytics-header {
+          flex-direction: column;
+          align-items: stretch;
+        }
       }
       
       .date-range {
@@ -40,9 +71,15 @@ export class AnalyticsView extends LitElement {
       
       .stats-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1.5rem;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
         margin-bottom: 2rem;
+      }
+      
+      @media (max-width: 640px) {
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
       }
       
       .stat-card {
@@ -119,9 +156,16 @@ export class AnalyticsView extends LitElement {
       
       .charts-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: 1.5rem;
         margin-bottom: 2rem;
+      }
+      
+      @media (max-width: 768px) {
+        .charts-grid {
+          grid-template-columns: 1fr;
+          gap: 1rem;
+        }
       }
       
       .chart-container {

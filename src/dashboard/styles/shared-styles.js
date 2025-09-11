@@ -17,6 +17,27 @@ export const sharedStyles = css`
   .container {
     width: 100%;
     height: 100%;
+    overflow: auto;
+  }
+  
+  .responsive-container {
+    width: 100%;
+    max-width: 100%;
+    padding: 1.5rem;
+    margin: 0 auto;
+    overflow-x: auto;
+  }
+  
+  @media (max-width: 768px) {
+    .responsive-container {
+      padding: 1rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .responsive-container {
+      padding: 0.75rem;
+    }
   }
   
   .flex {

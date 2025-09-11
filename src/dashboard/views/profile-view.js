@@ -6,12 +6,34 @@ export class ProfileView extends LitElement {
     sharedStyles,
     css`
       :host {
-        display: block;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        width: 100%;
+        min-height: 0;
+        overflow: auto;
       }
       
       .profile-container {
+        width: 100%;
         max-width: 800px;
         margin: 0 auto;
+        padding: 1.5rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      @media (max-width: 768px) {
+        .profile-container {
+          padding: 1rem;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .profile-container {
+          padding: 0.75rem;
+        }
       }
       
       .profile-header {

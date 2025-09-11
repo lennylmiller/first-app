@@ -8,12 +8,34 @@ export class WidgetsView extends LitElement {
     sharedStyles,
     css`
       :host {
-        display: block;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        width: 100%;
+        min-height: 0;
+        overflow: auto;
       }
       
       .widgets-container {
+        width: 100%;
         max-width: 1400px;
         margin: 0 auto;
+        padding: 1.5rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      @media (max-width: 768px) {
+        .widgets-container {
+          padding: 1rem;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .widgets-container {
+          padding: 0.75rem;
+        }
       }
       
       .widgets-header {
@@ -21,6 +43,19 @@ export class WidgetsView extends LitElement {
         justify-content: space-between;
         align-items: center;
         margin-bottom: 2rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+      
+      @media (max-width: 640px) {
+        .widgets-header {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        
+        .widgets-header h1 {
+          font-size: 1.5rem;
+        }
       }
       
       .header-actions {
@@ -30,9 +65,20 @@ export class WidgetsView extends LitElement {
       
       .widgets-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 1.5rem;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
         margin-bottom: 2rem;
+      }
+      
+      @media (max-width: 768px) {
+        .widgets-grid {
+          grid-template-columns: 1fr;
+        }
+        
+        .widget-wrapper.span-2,
+        .widget-wrapper.span-3 {
+          grid-column: span 1;
+        }
       }
       
       .widget-wrapper {

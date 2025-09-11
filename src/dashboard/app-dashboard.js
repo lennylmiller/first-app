@@ -29,6 +29,7 @@ export class AppDashboard extends LitElement {
         display: flex;
         flex: 1;
         overflow: hidden;
+        min-height: 0; /* Important for flex children */
       }
       
       .dashboard-content {
@@ -38,6 +39,7 @@ export class AppDashboard extends LitElement {
         overflow: auto;
         background-color: var(--color-background);
         transition: margin-left var(--transition-normal);
+        min-width: 0; /* Prevent flex item from overflowing */
       }
       
       .dashboard-content.sidebar-open {
@@ -50,7 +52,9 @@ export class AppDashboard extends LitElement {
       
       #outlet {
         flex: 1;
-        padding: 1.5rem;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
       }
       
       /* Mobile styles */
@@ -76,7 +80,7 @@ export class AppDashboard extends LitElement {
       
       /* Desktop styles */
       @media (min-width: 1024px) {
-        .dashboard-content {
+        .dashboard-content.sidebar-open {
           margin-left: 260px;
         }
         

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Components Todo App - Vite</title>
+</head>
+<body>
+    <h1 class="main-title">Web Components Showcase</h1>
+    
+    <div class="container">
+        <!-- Raw Web Component -->
+        <todo-list-raw></todo-list-raw>
+        
+        <!-- Polymer 3 Component -->
+        <todo-polymer></todo-polymer>
+        
+        <!-- Lit Component (v3) -->
+        <todo-lit></todo-lit>
+        
+        <!-- Lit v1 Todo Component (lit-element 2.x) -->
+        <todo-lit-v1></todo-lit-v1>
+        
+        <!-- Lit v1 Counter Component (lit-element 2.x) -->
+        <counter-lit-v1></counter-lit-v1>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+</body>
+</html>

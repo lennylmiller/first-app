@@ -175,7 +175,7 @@ template.innerHTML = `
   
   <div class="input-container">
     <input type="text" id="new-item-input" placeholder="Add a new task...">
-    <button id="add-btn">Add</button>
+    <button id="add-btn">Ad</button>
   </div>
   <ul id="todo-list"></ul>
   

@@ -198,6 +198,10 @@ export class TodoPolymer extends PolymerElement {
       showModal: {
         type: Boolean,
         value: false
+      },
+      _initialized: {
+        type: Boolean,
+        value: false
       }
     };
   }
@@ -208,12 +212,13 @@ export class TodoPolymer extends PolymerElement {
     ];
   }
 
-  ready() {
-    super.ready();
+  connectedCallback() {
+    super.connectedCallback();
     const storedTodos = localStorage.getItem('polymer-todo-list');
     if (storedTodos) {
       this.set('todos', JSON.parse(storedTodos));
     }
+    this._initialized = true;
   }
 
   _handleKeydown(e) {
@@ -238,7 +243,9 @@ export class TodoPolymer extends PolymerElement {
   }
 
   _saveTodos() {
-    localStorage.setItem('polymer-todo-list', JSON.stringify(this.todos));
+    if (this._initialized) {
+      localStorage.setItem('polymer-todo-list', JSON.stringify(this.todos));
+    }
   }
   
   _clearStorage() {

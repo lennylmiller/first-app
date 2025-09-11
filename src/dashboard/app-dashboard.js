@@ -2,6 +2,7 @@ import { LitElement, html, css } from 'lit';
 import { sharedStyles } from './styles/shared-styles.js';
 import { ResponsiveController } from './styles/responsive.js';
 import { themeService } from './services/theme-service.js';
+import { keyboardShortcuts } from './services/keyboard-shortcuts-service.js';
 import './components/app-sidebar.js';
 import './components/app-header.js';
 
@@ -119,6 +120,9 @@ export class AppDashboard extends LitElement {
     
     // Setup responsive sidebar behavior
     this.setupResponsiveSidebar();
+    
+    // Setup global event listeners for keyboard shortcuts
+    this.setupGlobalListeners();
   }
   
   disconnectedCallback() {
@@ -133,6 +137,24 @@ export class AppDashboard extends LitElement {
     if (this.responsive.isMobile()) {
       this.sidebarOpen = false;
     }
+  }
+  
+  setupGlobalListeners() {
+    // Listen for toggle-sidebar events from keyboard shortcuts
+    window.addEventListener('toggle-sidebar', () => {
+      this.toggleSidebar();
+    });
+    
+    // Listen for toggle-theme events from keyboard shortcuts
+    window.addEventListener('toggle-theme', () => {
+      const newTheme = this.theme === 'light' ? 'dark' : 'light';
+      themeService.applyTheme(newTheme);
+    });
+    
+    // Listen for navigate events from keyboard shortcuts
+    window.addEventListener('navigate', (e) => {
+      this.handleNavigation(e);
+    });
   }
   
   render() {

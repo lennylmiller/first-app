@@ -1,6 +1,9 @@
 import { LitElement, html, css } from 'lit';
 import { sharedStyles } from '../styles/shared-styles.js';
 import { themeService } from '../services/theme-service.js';
+import './app-search-bar.js';
+import './app-notifications.js';
+import './app-user-menu.js';
 
 export class AppHeader extends LitElement {
   static styles = [
@@ -54,35 +57,6 @@ export class AppHeader extends LitElement {
         justify-content: center;
       }
       
-      .search-container {
-        position: relative;
-        width: 100%;
-        max-width: 400px;
-      }
-      
-      .search-input {
-        width: 100%;
-        padding: 0.5rem 1rem;
-        padding-left: 2.5rem;
-        border: 1px solid var(--input-border);
-        border-radius: 20px;
-        background-color: var(--color-surface);
-        color: var(--color-text-primary);
-        font-size: 0.875rem;
-      }
-      
-      .search-input::placeholder {
-        color: var(--color-text-secondary);
-      }
-      
-      .search-icon {
-        position: absolute;
-        left: 1rem;
-        top: 50%;
-        transform: translateY(-50%);
-        color: var(--color-text-secondary);
-        pointer-events: none;
-      }
       
       .header-right {
         display: flex;
@@ -90,7 +64,7 @@ export class AppHeader extends LitElement {
         gap: 0.5rem;
       }
       
-      .icon-button {
+      .theme-button {
         width: 40px;
         height: 40px;
         padding: 0;
@@ -103,59 +77,15 @@ export class AppHeader extends LitElement {
         justify-content: center;
         border-radius: 50%;
         transition: background-color var(--transition-fast);
-        position: relative;
       }
       
-      .icon-button:hover {
+      .theme-button:hover {
         background-color: var(--color-surface);
-      }
-      
-      .notification-badge {
-        position: absolute;
-        top: 8px;
-        right: 8px;
-        width: 8px;
-        height: 8px;
-        background-color: var(--color-error);
-        border-radius: 50%;
-      }
-      
-      .user-menu {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.25rem;
-        background: none;
-        border: none;
-        cursor: pointer;
-        border-radius: 20px;
-        transition: background-color var(--transition-fast);
-      }
-      
-      .user-menu:hover {
-        background-color: var(--color-surface);
-      }
-      
-      .user-avatar {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        object-fit: cover;
-      }
-      
-      .user-name {
-        font-size: 0.875rem;
-        color: var(--color-text-primary);
-        font-weight: 500;
       }
       
       /* Mobile styles */
       @media (max-width: 767px) {
-        .search-container {
-          display: none;
-        }
-        
-        .user-name {
+        app-search-bar {
           display: none;
         }
       }
@@ -164,15 +94,13 @@ export class AppHeader extends LitElement {
   
   static properties = {
     user: { type: Object },
-    theme: { type: String },
-    notifications: { type: Number }
+    theme: { type: String }
   };
   
   constructor() {
     super();
     this.user = null;
     this.theme = 'light';
-    this.notifications = 0;
   }
   
   render() {
@@ -188,45 +116,34 @@ export class AppHeader extends LitElement {
         </div>
         
         <div class="header-center">
-          <div class="search-container">
-            <span class="search-icon">🔍</span>
-            <input
-              type="search"
-              class="search-input"
-              placeholder="Search... (Cmd/Ctrl + K)"
-              @keydown="${this.handleSearchKeydown}">
-          </div>
+          <app-search-bar
+            @navigate="${this.handleNavigate}"
+            @search-action="${this.handleSearchAction}">
+          </app-search-bar>
         </div>
         
         <div class="header-right">
           <button
-            class="icon-button"
+            class="theme-button"
             @click="${this.toggleTheme}"
             aria-label="Toggle theme"
             title="${this.theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme'}">
             ${this.theme === 'light' ? '🌙' : '☀️'}
           </button>
           
-          <button
-            class="icon-button"
-            @click="${this.showNotifications}"
-            aria-label="Notifications">
-            🔔
-            ${this.notifications > 0 ? html`
-              <span class="notification-badge"></span>
-            ` : ''}
-          </button>
+          <app-notifications
+            @navigate="${this.handleNavigate}"
+            @notification-action="${this.handleNotificationAction}">
+          </app-notifications>
           
-          ${this.user ? html`
-            <button class="user-menu" @click="${this.toggleUserMenu}">
-              <img 
-                class="user-avatar"
-                src="${this.user.avatar}"
-                alt="${this.user.name}">
-              <span class="user-name">${this.user.name}</span>
-              <span>▼</span>
-            </button>
-          ` : ''}
+          <app-user-menu
+            .user="${this.user}"
+            @navigate="${this.handleNavigate}"
+            @logout="${this.handleLogout}"
+            @show-activity="${this.handleShowActivity}"
+            @show-help="${this.handleShowHelp}"
+            @show-shortcuts="${this.handleShowShortcuts}">
+          </app-user-menu>
         </div>
       </header>
     `;
@@ -249,22 +166,51 @@ export class AppHeader extends LitElement {
     }));
   }
   
-  showNotifications() {
-    // Will be implemented when notifications component is created
-    console.log('Show notifications');
+  handleNavigate(e) {
+    // Pass navigation events up
+    this.dispatchEvent(new CustomEvent('navigate', {
+      detail: e.detail,
+      bubbles: true,
+      composed: true
+    }));
   }
   
-  toggleUserMenu() {
-    // Will be implemented when user menu component is created
-    console.log('Toggle user menu');
-  }
-  
-  handleSearchKeydown(e) {
-    // Implement Cmd/Ctrl + K shortcut
-    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-      e.preventDefault();
-      e.target.focus();
+  handleSearchAction(e) {
+    const { action } = e.detail;
+    
+    if (action === 'toggle-theme' || action === 'theme-light' || action === 'theme-dark') {
+      if (action === 'theme-light') {
+        themeService.applyTheme('light');
+      } else if (action === 'theme-dark') {
+        themeService.applyTheme('dark');
+      } else {
+        this.toggleTheme();
+      }
     }
+  }
+  
+  handleNotificationAction(e) {
+    console.log('Notification action:', e.detail);
+  }
+  
+  handleLogout() {
+    console.log('User logout');
+    // Implement logout logic
+  }
+  
+  handleShowActivity() {
+    console.log('Show activity');
+    // Navigate to activity page or show modal
+  }
+  
+  handleShowHelp() {
+    console.log('Show help');
+    // Show help modal or navigate to help page
+  }
+  
+  handleShowShortcuts() {
+    console.log('Show keyboard shortcuts');
+    // Show keyboard shortcuts modal
   }
 }
 

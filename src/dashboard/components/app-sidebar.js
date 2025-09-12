@@ -160,6 +160,13 @@ export class AppSidebar extends LitElement {
     this.currentRoute = '/';
     this.navigationItems = [
       {
+        id: 'home',
+        label: 'Home',
+        icon: '🏠',
+        path: '/',
+        badge: null
+      },
+      {
         id: 'todos',
         label: 'Todos',
         icon: '✓',

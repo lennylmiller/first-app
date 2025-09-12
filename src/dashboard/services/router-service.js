@@ -10,7 +10,10 @@ export class RouterService {
     this.router.setRoutes([
       {
         path: '/',
-        redirect: '/todos'
+        component: 'showcase-view',
+        action: async () => {
+          await import('../views/showcase-view.js');
+        }
       },
       {
         path: '/todos',

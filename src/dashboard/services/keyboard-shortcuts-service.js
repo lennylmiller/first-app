@@ -120,6 +120,7 @@ class KeyboardShortcutsService {
   
   toggleSidebar() {
     window.dispatchEvent(new CustomEvent('toggle-sidebar', {
+      detail: { source: 'keyboard' },
       bubbles: true,
       composed: true
     }));

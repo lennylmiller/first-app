@@ -43,7 +43,7 @@ export class AppDashboard extends LitElement {
       }
       
       .dashboard-content.sidebar-open {
-        margin-left: 0;
+        margin-left: 260px;
       }
       
       .dashboard-content.sidebar-closed {
@@ -106,9 +106,9 @@ export class AppDashboard extends LitElement {
     this.theme = 'light';
     this.loading = false;
     this.user = {
-      name: 'John Doe',
-      email: 'john.doe@example.com',
-      avatar: 'https://ui-avatars.com/api/?name=John+Doe&background=2196F3&color=fff'
+      name: 'Lenny Miller',
+      email: 'lenny.l.miller@gmail.com',
+      avatar: 'https://ui-avatars.com/api/?name=Lenny+Miller&background=2196F3&color=fff'
     };
     
     this.responsive = new ResponsiveController(this);
@@ -148,8 +148,12 @@ export class AppDashboard extends LitElement {
   
   setupGlobalListeners() {
     // Listen for toggle-sidebar events from keyboard shortcuts
-    window.addEventListener('toggle-sidebar', () => {
-      this.toggleSidebar();
+    window.addEventListener('toggle-sidebar', (e) => {
+      // Only handle if this is from keyboard shortcuts (not from header button)
+      // Header button events are handled by the @toggle-sidebar listener in render()
+      if (e.detail && e.detail.source === 'keyboard') {
+        this.toggleSidebar();
+      }
     });
     
     // Listen for toggle-theme events from keyboard shortcuts
@@ -172,7 +176,7 @@ export class AppDashboard extends LitElement {
         <app-header
           .user="${this.user}"
           .theme="${this.theme}"
-          @toggle-sidebar="${this.toggleSidebar}"
+          @toggle-sidebar="${() => this.toggleSidebar()}"
           @theme-change="${this.handleThemeChange}"
           role="banner"
           aria-label="Dashboard Header">
@@ -183,7 +187,7 @@ export class AppDashboard extends LitElement {
             ?open="${this.sidebarOpen}"
             .currentRoute="${this.currentRoute}"
             .responsive="${this.responsive.currentBreakpoint}"
-            @toggle="${this.toggleSidebar}"
+            @toggle="${() => this.toggleSidebar()}"
             @navigate="${this.handleNavigation}"
             role="navigation"
             aria-label="Main Navigation">

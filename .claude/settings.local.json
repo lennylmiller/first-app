@@ -31,7 +31,8 @@
       "Bash(done)",
       "Bash(mysql:*)",
       "Read(//Applications/**)",
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []

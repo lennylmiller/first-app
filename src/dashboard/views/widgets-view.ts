@@ -3,6 +3,7 @@ import { customElement, state } from 'lit/decorators.js';
 import { sharedStyles } from '../styles/shared-styles.js';
 import { storage } from '../services/storage-service.js';
 import '../components/dashboard-widget.js';
+import '../components/pac-man-widget.js';
 
 interface Widget {
   id: string;
@@ -635,6 +636,9 @@ export class WidgetsView extends LitElement {
           </div>
         `;
 
+      case 'pac-man':
+        return html`<pac-man-widget .widgetId=${widget.id}></pac-man-widget>`;
+
       default:
         return html`
           <div style="padding: 1rem; text-align: center; color: var(--color-text-secondary);">
@@ -657,7 +661,8 @@ export class WidgetsView extends LitElement {
       { type: 'notes', name: 'Notes', icon: '📝' },
       { type: 'timer', name: 'Timer', icon: '⏱️' },
       { type: 'calculator', name: 'Calculator', icon: '🧮' },
-      { type: 'stocks', name: 'Stock Ticker', icon: '📈' }
+      { type: 'stocks', name: 'Stock Ticker', icon: '📈' },
+      { type: 'pac-man', name: 'Pac-Man Game', icon: '👾' }
     ];
 
     return html`

@@ -4,17 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <script type="module" src="index.js"></script>
+    <script type="module" src="pac-man.js"></script>
   </head>
   <body>
-    <smiley-emoji></smiley-emoji>
-    <span is="add-smiley-before">span</span>
-    <span is="add-smiley-after">span</span>
-    <a href="paragraph.html">Paragraph Link</a>
-    <hr>
-    <button accesskey="s" accesskeylabel="Save (Alt+S)">Save</button>
-    <p><small>Press <b>Alt + S</b> (Windows/Linux) or <b>Control + Option + S</b> (Mac) to activate the Save button using the access key.</small></p>
-    <div id="saving-status" style="font-size:1.5em;margin:1em 0;"></div>
-    <canvas id="pacman-canvas" width="600" height="200" style="border:1px solid #ccc;display:none;"></canvas>
+    <pac-man chomp-time="8" power-pellet="red" normal-pellet="green" background-color="white"></pac-man>
   </body>
 </html>
